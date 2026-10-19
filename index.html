@@ -1,20 +1,6 @@
 <?php
 // Inisialisasi nilai default
-$modal_bahan = isset($_POST['modal_bahan']) ? floatval($_POST['modal_bahan']) : 35000;
-$modal_lain = isset($_POST['modal_lain']) ? floatval($_POST['modal_lain']) : 5000;
-$jumlah_porsi = isset($_POST['jumlah_porsi']) ? floatval($_POST['jumlah_porsi']) : 10;
-$harga_jual = isset($_POST['harga_jual']) ? floatval($_POST['harga_jual']) : 6000;
 
-$sudah_dihitung = isset($_POST['hitung']);
-
-if ($sudah_dihitung) {
-    $total_modal = $modal_bahan + $modal_lain;
-    $hpp_per_porsi = $jumlah_porsi > 0 ? $total_modal / $jumlah_porsi : 0;
-    $total_pendapatan = $jumlah_porsi * $harga_jual;
-    $laba_bersih = $total_pendapatan - $total_modal;
-    $persentase_laba = $total_modal > 0 ? ($laba_bersih / $total_modal) * 100 : 0;
-}
-?>
 
 <!DOCTYPE html>
 <html lang="id">

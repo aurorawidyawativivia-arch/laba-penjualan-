@@ -1,0 +1,214 @@
+<?php
+// Inisialisasi nilai default
+$modal_bahan = isset($_POST['modal_bahan']) ? floatval($_POST['modal_bahan']) : 35000;
+$modal_lain = isset($_POST['modal_lain']) ? floatval($_POST['modal_lain']) : 5000;
+$jumlah_porsi = isset($_POST['jumlah_porsi']) ? floatval($_POST['jumlah_porsi']) : 10;
+$harga_jual = isset($_POST['harga_jual']) ? floatval($_POST['harga_jual']) : 6000;
+
+$sudah_dihitung = isset($_POST['hitung']);
+
+if ($sudah_dihitung) {
+    $total_modal = $modal_bahan + $modal_lain;
+    $hpp_per_porsi = $jumlah_porsi > 0 ? $total_modal / $jumlah_porsi : 0;
+    $total_pendapatan = $jumlah_porsi * $harga_jual;
+    $laba_bersih = $total_pendapatan - $total_modal;
+    $persentase_laba = $total_modal > 0 ? ($laba_bersih / $total_modal) * 100 : 0;
+}
+?>
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Laba Bolu Pisang PHP</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background-color: #f7f9fc;
+            color: #333;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+        .header {
+            background: linear-gradient(135deg, #d35400, #e67e22);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 20px;
+            font-weight: 700;
+        }
+        .header p {
+            font-size: 13px;
+            opacity: 0.9;
+            margin-top: 4px;
+        }
+        .content {
+            padding: 20px;
+        }
+        .section-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #d35400;
+            margin-bottom: 12px;
+            border-bottom: 2px solid #fdf2e9;
+            padding-bottom: 6px;
+        }
+        .input-group {
+            margin-bottom: 12px;
+        }
+        label {
+            display: block;
+            font-size: 12px;
+            color: #555;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+        input {
+            width: 100%;
+            padding: 9px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        input:focus {
+            border-color: #e67e22;
+        }
+        .btn-hitung {
+            width: 100%;
+            padding: 12px;
+            background-color: #e67e22;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.2s;
+        }
+        .btn-hitung:hover {
+            background-color: #d35400;
+        }
+        .result-box {
+            margin-top: 25px;
+            background: #fdf2e9;
+            border-radius: 12px;
+            padding: 15px;
+            border: 1px solid #fae5d3;
+        }
+        .result-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #d35400;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            margin-bottom: 8px;
+            color: #444;
+        }
+        .result-item span:last-child {
+            font-weight: 600;
+        }
+        .result-item.highlight {
+            border-top: 1px dashed #e67e22;
+            padding-top: 8px;
+            margin-top: 8px;
+            font-size: 15px;
+            color: <?php echo ($sudah_dihitung && $laba_bersih < 0) ? '#e74c3c' : '#27ae60'; ?>;
+        }
+        .result-item.highlight span:last-child {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>🍌 Kalkulator Laba Bolu Pisang (PHP)</h1>
+        <p>Analisis HPP dan keuntungan berbasis server PHP</p>
+    </div>
+
+    <div class="content">
+        <form method="POST" action="">
+            <!-- Input Bahan & Biaya -->
+            <div class="section-title">1. Rincian Modal (Bahan & Lainnya)</div>
+            <div class="input-group">
+                <label for="modal_bahan">Total Biaya Bahan Baku (Rp)</label>
+                <input type="number" id="modal_bahan" name="modal_bahan" value="<?php echo $modal_bahan; ?>" required>
+            </div>
+            <div class="input-group">
+                <label for="modal_lain">Biaya Gas, Kemasan, dll (Rp)</label>
+                <input type="number" id="modal_lain" name="modal_lain" value="<?php echo $modal_lain; ?>" required>
+            </div>
+
+            <!-- Input Produksi & Jual -->
+            <div class="section-title" style="margin-top: 20px;">2. Target Produksi & Harga Jual</div>
+            <div class="input-group">
+                <label for="jumlah_porsi">Jumlah Hasil (Potong / Loyang)</label>
+                <input type="number" id="jumlah_porsi" name="jumlah_porsi" value="<?php echo $jumlah_porsi; ?>" required>
+            </div>
+            <div class="input-group">
+                <label for="harga_jual">Harga Jual per Potong / Loyang (Rp)</label>
+                <input type="number" id="harga_jual" name="harga_jual" value="<?php echo $harga_jual; ?>" required>
+            </div>
+
+            <button type="submit" name="hitung" class="btn-hitung">Hitung Keuntungan</button>
+        </form>
+
+        <?php if ($sudah_dihitung): ?>
+            <!-- Kotak Hasil -->
+            <div class="result-box">
+                <div class="result-title">Hasil Analisis Keuangan</div>
+                <div class="result-item">
+                    <span>Total Modal Produksi:</span>
+                    <span>Rp <?php echo number_format($total_modal, 0, ',', '.'); ?></span>
+                </div>
+                <div class="test result-item">
+                    <span>HPP (Modal per Porsi):</span>
+                    <span>Rp <?php echo number_format($hpp_per_porsi, 0, ',', '.'); ?></span>
+                </div>
+                <div class="result-item">
+                    <span>Total Proyeksi Pendapatan:</span>
+                    <span>Rp <?php echo number_format($total_pendapatan, 0, ',', '.'); ?></span>
+                </div>
+                <div class="result-item highlight">
+                    <span>Keuntungan Bersih (Profit):</span>
+                    <span>Rp <?php echo number_format($laba_bersih, 0, ',', '.'); ?></span>
+                </div>
+                <div class="result-item">
+                    <span>Persentase Keuntungan:</span>
+                    <span><?php echo number_format($persentase_laba, 1, ',', '.'); ?>%</span>
+                </div>
+            </div>
+        <?php endif; ?>
+    </div>
+</div>
+
+</body>
+  </html>
+  
